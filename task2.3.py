@@ -32,8 +32,8 @@ def grad_phi(z):
 # Step 2: Define the nonlinear transformation function phi
 def sigma(z):
     return np.mean(phi(z), axis=0)
-def cost_function(z, r, s):
-    return gamma * np.linalg.norm(z - r)**2 + delta * np.linalg.norm(z - s)**2
+def cost_function(z, r, s, w1, w2):
+    return gamma * np.linalg.norm(z - r)**2 + delta * np.linalg.norm(z - s)**2 + epsilon * (np.linalg.norm(z[1] - (w1[0][1] + w2[0][1]) / 2)**2)
 def grad_function_1(z, r, s, w1, w2):
     c = 0
     if (z[0] < w1[1][0]):
@@ -100,7 +100,28 @@ for kk in range(MAXITERS - 1):
 
         SS_at[kk + 1, ii] += phi(ZZ_at[kk + 1, ii]) - phi(ZZ_at[kk, ii])
 
-        VV_at[kk + 1, ii] += grad_function_2(ZZ_at[kk + 1, ii], SS_at[kk + 1, ii]) - grad_function_2(ZZ_at[kk, ii], SS_at[kk, ii])
+        new_grad = grad_function_2(ZZ_at[kk + 1, ii], SS_at[kk + 1, ii])
+        old_grad = grad_function_2(ZZ_at[kk, ii], SS_at[kk, ii])
+        VV_at[kk + 1, ii] += new_grad - old_grad
+
+        gradient_norm = np.linalg.norm(new_grad - old_grad)
+        gradients_norm[kk] = gradient_norm
+
+        ell_ii_gt = cost_function(ZZ_at[kk, ii], r[ii], SS_at[kk, ii], wall1, wall2)
+        cost_at[kk] += ell_ii_gt
+
+
+fig, ax = plt.subplots()
+ax.plot(np.arange(MAXITERS - 1), cost_at[:-1])
+ax.grid()
+
+plt.show()
+
+fig, ax = plt.subplots()
+ax.plot(np.arange(MAXITERS - 1), gradients_norm[0:-1])
+ax.grid()
+
+plt.show()
 def animation(ZZ_at, NN, MAXITERS, r):
 
     '''

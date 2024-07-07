@@ -6,12 +6,14 @@ from scipy.integrate import solve_ivp
 np.random.seed(0)
 # Parameters
 NN = 10  # Number of points
-d = 2    # Dimension of the input space
+
+MAXITERS = 1000
+dd = 2    # Dimension of the input space
 q = 4
 gamma = 0.5
 delta = 0.5
 # Step 1: Generate a dataset
-r = np.random.randn(NN, d)
+r = np.random.randn(MAXITERS,NN, dd)
 print(r)
 print(r[:, 0])
 def phi(z):
@@ -53,8 +55,6 @@ AA += I_NN - np.diag(np.sum(AA, axis=0))
 if 0:
     print(np.sum(AA, axis=0))
     print(np.sum(AA, axis=1))
-MAXITERS = 1000
-dd = 2
 
 ZZ_at = np.random.randn(MAXITERS, NN, dd)
 SS_at = np.zeros((MAXITERS, NN, dd))
@@ -67,13 +67,15 @@ for ii in range(NN):
 cost_at = np.zeros((MAXITERS))
 gradients_norm = np.zeros((MAXITERS))
 alpha = 1e-2
+
+
 for kk in range(MAXITERS - 1):
 
     # gradient tracking
     for ii in range(NN):
         N_ii = np.nonzero(Adj[ii])[0]
 
-        ZZ_at[kk + 1, ii] = ZZ_at[kk, ii] - alpha * (grad_function_1(ZZ_at[kk, ii], r[ii], SS_at[kk, ii]) + grad_phi(ZZ_at[kk, ii]) * VV_at[kk, ii])
+        ZZ_at[kk + 1, ii] = ZZ_at[kk, ii] - alpha * (grad_function_1(ZZ_at[kk, ii], r[kk, ii], SS_at[kk, ii]) + grad_phi(ZZ_at[kk, ii]) * VV_at[kk, ii])
 
         SS_at[kk + 1, ii] += AA[ii, ii] * SS_at[kk, ii]
         VV_at[kk + 1, ii] += AA[ii, ii] * VV_at[kk, ii]
@@ -83,7 +85,35 @@ for kk in range(MAXITERS - 1):
 
         SS_at[kk + 1, ii] += phi(ZZ_at[kk + 1, ii]) - phi(ZZ_at[kk, ii])
 
-        VV_at[kk + 1, ii] += grad_function_2(ZZ_at[kk + 1, ii], SS_at[kk + 1, ii]) - grad_function_2(ZZ_at[kk, ii], SS_at[kk, ii])
+        new_grad = grad_function_2(ZZ_at[kk + 1, ii], SS_at[kk + 1, ii])
+        old_grad = grad_function_2(ZZ_at[kk, ii], SS_at[kk, ii])
+        VV_at[kk + 1, ii] += new_grad - old_grad
+
+        gradient_norm = np.linalg.norm(new_grad - old_grad)
+        gradients_norm[kk] = gradient_norm
+
+        ell_ii_gt = cost_function(ZZ_at[kk, ii], r[kk, ii], SS_at[kk, ii])
+        cost_at[kk] += ell_ii_gt
+
+        if ii > 1:
+            r[kk + 1, ii] = r[kk, ii] + ((kk + np.linalg.norm(r[kk, ii] - r[kk - 1, ii])) * 0.01 * np.random.randn(dd)) + 0.9 * (r[kk, ii] - r[kk - 1, ii])
+        else:
+            r[kk + 1, ii] = r[kk, ii] + 0.01 * np.random.randn(dd)
+
+
+fig, ax = plt.subplots()
+ax.plot(np.arange(MAXITERS - 1), cost_at[:-1])
+ax.grid()
+
+plt.show()
+
+fig, ax = plt.subplots()
+ax.plot(np.arange(MAXITERS - 1), gradients_norm[0:-1])
+ax.grid()
+
+plt.show()
+
+
 def animation(ZZ_at, NN, MAXITERS, r):
 
     '''
@@ -127,8 +157,8 @@ def animation(ZZ_at, NN, MAXITERS, r):
 
     for tt in range(MAXITERS):
         plt.plot(
-            r[:, 0],
-            r[:, 1],
+            r[tt, :, 0],
+            r[tt, :, 1],
             marker="x",
             markersize=15,
             color="red",
@@ -151,6 +181,6 @@ def animation(ZZ_at, NN, MAXITERS, r):
         plt.pause(0.001)
         plt.clf()
 plt.figure("Animation")
-animation(ZZ_at, NN, 300, r)
+animation(ZZ_at, NN, MAXITERS, r)
 
 plt.show()
