@@ -52,7 +52,7 @@ def generate_launch_description():
     if 0:
         print(np.sum(AA, axis=0))
         print(np.sum(AA, axis=1))
-    MAXITERS = 1000
+    MAXITERS = 300
     dd = 2
 
     ZZ_at = np.random.randn(MAXITERS, NN, dd)
@@ -74,34 +74,15 @@ def generate_launch_description():
     for ii in range(NN):
         #print(ii)
         N_ii = np.nonzero(Adj[ii])[0]
-        print(N_ii)
-        print(type(N_ii))
         ZZ_at_0_ii = np.array(ZZ_at[0, ii])
-        print(ZZ_at_0_ii)
-        print(type(ZZ_at_0_ii))
         SS_at_0_ii = np.array(SS_at[0, ii])
-        print(SS_at_0_ii)
-        print(type(SS_at_0_ii))
         VV_at_0_ii = np.array(VV_at[0, ii])
-        print(VV_at_0_ii)
-        print(type(VV_at_0_ii))
         r_ii = np.array(r[ii])
-        print(r_ii)
-        print(type(r_ii))
-        AA_ii = AA[ii, ii]
+        AA_ii = float(AA[ii, ii])
         print(AA_ii)
-        print(type(AA_ii))
-        print(gamma)
-        print(type(gamma))
-        print(delta)
-        print(type(delta))
-        print(alpha)
-        print(type(alpha))
         AA_neighbors = []
         for neighbor in N_ii:
             AA_neighbors.append(AA[ii, neighbor])
-        print(AA_neighbors)
-        print(type(AA_neighbors))
         node_list.append(
             Node(
                 package="formation_control",
@@ -118,7 +99,7 @@ def generate_launch_description():
                         "r": r_ii.tolist(),
                         "gamma": gamma,
                         "delta": delta,
-                        "aplha": alpha,
+                        "alpha": alpha,
                         "AA": AA_ii,
                         "AA_neighbors": AA_neighbors,
                         "maxT": MAXITERS,
