@@ -29,6 +29,7 @@ def generate_launch_description():
     q = 4
     gamma = 0.5
     delta = 0.5
+ 
     # Step 1: Generate a dataset
     r = np.random.randn(NN, d)
 

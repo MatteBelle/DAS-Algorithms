@@ -3,12 +3,22 @@ import numpy as np
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float32MultiArray as MsgFloat
-from geometry_msgs.msg import PoseStamped, PointStamped
+from geometry_msgs.msg import PoseStamped, PointStamped, Point
 from builtin_interfaces.msg import Time
+from visualization_msgs.msg import Marker
 
-
+'''
 def grad_function_1(z, r, s, gamma, delta):
     return 2 * gamma * (z[0] - r[0]) + 2 * delta * (z[0] - s[0]), 2 * gamma * (z[1] - r[1]) + 2 * delta * (z[1] - s[1])
+
+def grad_function_2(z, s, delta):
+    return 2 * delta * (z - s)
+'''
+def grad_function_1(z, r, s, w1, w2, epsilon, gamma, delta):
+    c = 0
+    if (z[0] < w1[1][0]):
+        c = 2 * epsilon * (z[1] - (w1[0][1] + w2[0][1]) / 2)
+    return 2 * gamma * (z[0] - r[0]) + 2 * delta * (z[0] - s[0]), 2 * gamma * (z[1] - r[1]) + 2 * delta * (z[1] - s[1]) + c
 
 def grad_function_2(z, s, delta):
     return 2 * delta * (z - s)
@@ -19,8 +29,8 @@ def grad_phi(z):
 def phi(z):
     return z
 
-def gradient_tracking(zz_at, neighbors, ss_at, vv_at, alpha, r, AA, AA_neighbors, vv_at_neighbors, ss_at_neighbors, delta, gamma):
-    zz_next = zz_at - alpha * (grad_function_1(zz_at, r, ss_at, gamma, delta) + grad_phi(zz_at) * vv_at)
+def gradient_tracking(zz_at, neighbors, ss_at, vv_at, alpha, r, AA, AA_neighbors, vv_at_neighbors, ss_at_neighbors, delta, gamma, epsilon, wall1, wall2):
+    zz_next = zz_at - alpha * (grad_function_1(zz_at, r, ss_at, wall1, wall2, epsilon, gamma, delta) + grad_phi(zz_at) * vv_at)
     ss_next = AA * ss_at
     vv_next = AA * vv_at
     for jj, neighbor in zip(AA_neighbors, neighbors):
@@ -82,6 +92,16 @@ class Agent(Node):
         print(f"AA_neighbors: {self.AA_neighbors}")
         self.maxIters = self.get_parameter("maxT").value
         print(f"maxIters: {self.maxIters}")
+        self.wall1_1 = np.array(self.get_parameter("wall1_point1").value)
+        self.wall1_2 = np.array(self.get_parameter("wall1_point2").value)
+        self.wall1 = [self.wall1_1, self.wall1_2]
+        self.wall2_1 = np.array(self.get_parameter("wall2_point1").value)
+        self.wall2_2 = np.array(self.get_parameter("wall2_point2").value)
+        self.wall2 = [self.wall2_1, self.wall2_2]
+        print(f"wall1: {self.wall1}")
+        print(f"wall2: {self.wall2}")
+        self.epsilon = self.get_parameter("epsilon").value
+        print(f"epsilon: {self.epsilon}")
 
         self.get_logger().info(f"I am agent: {self.agent_id}")
 
@@ -119,6 +139,13 @@ class Agent(Node):
         self.target_pub = self.create_publisher(PointStamped, f"/target_{self.agent_id}", 10)
         self.timer_target = self.create_timer(1, self.publish_target)
 
+        # RViz publisher for walls
+        self.wall1_pub = self.create_publisher(Marker, f"/wall1_{self.agent_id}", 10)
+        self.wall2_pub = self.create_publisher(Marker, f"/wall2_{self.agent_id}", 10)
+        self.timer_wall1 = self.create_timer(1, self.publish_wall1)
+        self.timer_wall2 = self.create_timer(1, self.publish_wall2)
+
+
 
     def publish_pose(self):
         msg = PointStamped()
@@ -132,8 +159,38 @@ class Agent(Node):
         msg.header.frame_id = "map"
         msg.point.x = self.r[0]
         msg.point.y = self.r[1]
-        # change color of target to green
         self.target_pub.publish(msg)
+
+    def publish_wall1(self):
+        msg = Marker()
+        msg.header.frame_id = "map"
+        msg.type = msg.LINE_STRIP
+        msg.action = msg.ADD
+        msg.scale.x = 0.1
+        msg.color.r = 0.0
+        msg.color.g = 1.0
+        msg.color.b = 0.0
+        msg.color.a = 1.0
+        msg.points = []
+        for point in self.wall1:
+            msg.points.append(Point(x=point[0], y=point[1]))
+        self.wall1_pub.publish(msg)
+        
+
+    def publish_wall2(self):
+        msg = Marker()
+        msg.header.frame_id = "map"
+        msg.type = msg.LINE_STRIP
+        msg.action = msg.ADD
+        msg.scale.x = 0.1
+        msg.color.r = 0.0
+        msg.color.g = 1.0
+        msg.color.b = 0.0
+        msg.color.a = 1.0
+        msg.points = []
+        for point in self.wall2:
+            msg.points.append(Point(x=point[0], y=point[1]))
+        self.wall2_pub.publish(msg)
 
     def listener_callback(self, msg):
         j = int(msg.data[0])
@@ -193,6 +250,9 @@ class Agent(Node):
                     self.ss_at_neighbors,
                     self.delta,
                     self.gamma,
+                    self.epsilon,
+                    self.wall1,
+                    self.wall2,
                 )
                 sleep(0.5)
                 msg.data = [float(self.agent_id), float(self.t)] + self.ss_init.tolist() + self.vv_init.tolist()
