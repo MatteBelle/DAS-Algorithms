@@ -10,10 +10,10 @@ NN = 10  # Number of points
 MAXITERS = 1000
 dd = 2    # Dimension of the input space
 q = 4
-gamma = 0.5
-delta = 0.5
+gamma = 1
+delta = 0
 # Step 1: Generate a dataset
-r = np.random.randn(MAXITERS,NN, dd)
+r = np.random.randn(NN, dd)
 print(r)
 print(r[:, 0])
 def phi(z):
@@ -24,18 +24,21 @@ def grad_phi(z):
 # Step 2: Define the nonlinear transformation function phi
 def sigma(z):
     return np.mean(phi(z), axis=0)
+
 def cost_function(z, r, s):
     return gamma * np.linalg.norm(z - r)**2 + delta * np.linalg.norm(z - s)**2
+
 def grad_function_1(z, r, s):
     return 2 * gamma * (z[0] - r[0]) + 2 * delta * (z[0] - s[0]), 2 * gamma * (z[1] - r[1]) + 2 * delta * (z[1] - s[1])
 
 def grad_function_2(z, s):
     return 2 * delta * (z - s)
+
 NN = 10
 
 #G = nx.path_graph(NN)
-#G = nx.star_graph(NN-1)
-G = nx.cycle_graph(NN)
+G = nx.star_graph(NN-1)
+#G = nx.cycle_graph(NN)
 
 I_NN = np.eye(NN)
 
@@ -56,7 +59,9 @@ if 0:
     print(np.sum(AA, axis=0))
     print(np.sum(AA, axis=1))
 
-ZZ_at = np.random.randn(MAXITERS, NN, dd)
+#ZZ_at = np.random.randn(MAXITERS, NN, dd)
+
+ZZ_at = np.zeros((MAXITERS, NN, dd))
 SS_at = np.zeros((MAXITERS, NN, dd))
 VV_at = np.zeros((MAXITERS, NN, dd))
 for ii in range(NN):
@@ -65,17 +70,18 @@ for ii in range(NN):
 
 
 cost_at = np.zeros((MAXITERS))
-gradients_norm = np.zeros((MAXITERS))
+gradients_norm= np.zeros((MAXITERS))
+gradients_k = np.zeros((q))
 alpha = 1e-2
-
 
 for kk in range(MAXITERS - 1):
 
+    gradients_k = np.zeros((q))
     # gradient tracking
     for ii in range(NN):
         N_ii = np.nonzero(Adj[ii])[0]
 
-        ZZ_at[kk + 1, ii] = ZZ_at[kk, ii] - alpha * (grad_function_1(ZZ_at[kk, ii], r[kk, ii], SS_at[kk, ii]) + grad_phi(ZZ_at[kk, ii]) * VV_at[kk, ii])
+        ZZ_at[kk + 1, ii] = ZZ_at[kk, ii] - alpha * (grad_function_1(ZZ_at[kk, ii], r[ii], SS_at[kk, ii]) + grad_phi(ZZ_at[kk, ii]) * VV_at[kk, ii])
 
         SS_at[kk + 1, ii] += AA[ii, ii] * SS_at[kk, ii]
         VV_at[kk + 1, ii] += AA[ii, ii] * VV_at[kk, ii]
@@ -85,91 +91,54 @@ for kk in range(MAXITERS - 1):
 
         SS_at[kk + 1, ii] += phi(ZZ_at[kk + 1, ii]) - phi(ZZ_at[kk, ii])
 
-        new_grad = grad_function_2(ZZ_at[kk + 1, ii], SS_at[kk + 1, ii])
-        old_grad = grad_function_2(ZZ_at[kk, ii], SS_at[kk, ii])
-        VV_at[kk + 1, ii] += new_grad - old_grad
+        new_grad_3 = grad_function_2(ZZ_at[kk + 1, ii], SS_at[kk + 1, ii])
+        old_grad_3 = grad_function_2(ZZ_at[kk, ii], SS_at[kk, ii])
+        VV_at[kk + 1, ii] += new_grad_3 - old_grad_3
 
-        gradient_norm = np.linalg.norm(new_grad - old_grad)
-        gradients_norm[kk] = gradient_norm
 
-        ell_ii_gt = cost_function(ZZ_at[kk, ii], r[kk, ii], SS_at[kk, ii])
+        old_grad_1, old_grad_2 = grad_function_1(ZZ_at[kk, ii], r[ii], SS_at[kk, ii])
+        new_grad_1, new_grad_2 = grad_function_1(ZZ_at[kk + 1, ii], r[ii], SS_at[kk, ii])
+        gradients_k[0] += new_grad_1 - old_grad_1
+        gradients_k[1] += new_grad_2 - old_grad_2
+
+        gradients_k[2] += new_grad_3[0] - old_grad_3[0]
+        gradients_k[3] += new_grad_3[1] - old_grad_3[1]
+
+        ell_ii_gt = cost_function(ZZ_at[kk, ii], r[ii], SS_at[kk, ii])
         cost_at[kk] += ell_ii_gt
 
-        if ii > 1:
-            r[kk + 1, ii] = r[kk, ii] + ((kk + np.linalg.norm(r[kk, ii] - r[kk - 1, ii])) * 0.01 * np.random.randn(dd)) + 0.9 * (r[kk, ii] - r[kk - 1, ii])
-        else:
-            r[kk + 1, ii] = r[kk, ii] + 0.01 * np.random.randn(dd)
-
+    gradients_norm[kk] = np.linalg.norm(gradients_k)
 
 fig, ax = plt.subplots()
-ax.plot(np.arange(MAXITERS - 1), cost_at[:-1])
+ax.semilogy(np.arange(MAXITERS - 1), cost_at[:-1])
 ax.grid()
 
 plt.show()
 
 fig, ax = plt.subplots()
-ax.plot(np.arange(MAXITERS - 1), gradients_norm[0:-1])
+ax.semilogy(np.arange(MAXITERS - 1), gradients_norm[0:-1])
 ax.grid()
 
 plt.show()
-
 
 def animation(ZZ_at, NN, MAXITERS, r):
-
-    '''
-    for tt in range(len(horizon)):
-        # plot trajectories
-        plt.plot(
-            XX[0 : n_x * NN : n_x].T,
-            XX[1 : n_x * NN : n_x].T,
-            color=gray_O4S,
-            linestyle="dashed",
-            alpha=0.5,
-        )
-
-        # plot formation
-        xx_tt = XX[:, tt].T
-        for ii in range(NN):
-            index_ii = ii * n_x + np.arange(n_x)
-            p_prev = xx_tt[index_ii]
-
+    color = ["r", "g", "b", "c", "m", "y", "#0072BD", "#D95319", "#7E2F8E", "#77AC30"]
+    for tt in range(MAXITERS):
+        for i in range(NN):
             plt.plot(
-                p_prev[0],
-                p_prev[1],
+                r[i, 0],
+                r[i, 1],
+                marker="x",
+                markersize=15,
+                color=color[i],
+            )
+            plt.plot(
+                ZZ_at[tt, i, 0],
+                ZZ_at[tt, i, 1],
                 marker="o",
                 markersize=15,
-                fillstyle="full",
-                color=red_O4S,
+                color=color[i],
             )
-
-            for jj in range(NN):
-                if Adj[ii, jj] & (jj > ii):
-                    index_jj = (jj % NN) * n_x + np.arange(n_x)
-                    p_curr = xx_tt[index_jj]
-                    plt.plot(
-                        [p_prev[0], p_curr[0]],
-                        [p_prev[1], p_curr[1]],
-                        linewidth=1,
-                        color=emph_O4S,
-                        linestyle="solid",
-                    )
-        '''
-
-    for tt in range(MAXITERS):
-        plt.plot(
-            r[tt, :, 0],
-            r[tt, :, 1],
-            marker="x",
-            markersize=15,
-            color="red",
-        )
-        plt.plot(
-            ZZ_at[tt, :, 0],
-            ZZ_at[tt, :, 1],
-            marker="o",
-            markersize=15,
-            color="blue",
-        )
         axes_lim = (np.min(r) - 1, np.max(r) + 1)
         plt.xlim(axes_lim)
         plt.ylim(axes_lim)
