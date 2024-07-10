@@ -6,7 +6,7 @@ from scipy.integrate import solve_ivp
 np.random.seed(0)
 # Parameters
 NN = 10  # Number of points
-MAXITERS = 1000
+MAXITERS = 300
 dd = 2   # Dimension of the input space
 q = 4
 gamma = 0.5
@@ -69,7 +69,7 @@ if 0:
 
 ZZ_at = np.random.randn(MAXITERS, NN, dd)
 for n in range(NN):
-    ZZ_at[0, n] = ZZ_at[0, n] - (15,0)
+    ZZ_at[0, n] = ZZ_at[0, n] - (10,0)
 SS_at = np.zeros((MAXITERS, NN, dd))
 VV_at = np.zeros((MAXITERS, NN, dd))
 for ii in range(NN):
@@ -125,76 +125,33 @@ ax.semilogy(np.arange(MAXITERS - 1), gradients_norm[0:-1])
 ax.grid()
 
 plt.show()
+
 def animation(ZZ_at, SS_at, NN, MAXITERS, r):
     color = ["r", "g", "b", "c", "m", "y", "#0072BD", "#D95319", "#7E2F8E", "#77AC30"]
-    for tt in range(MAXITERS):
-        for i in range(NN):
-            if i == 0:
-                plt.plot(
-                    r[i, 0],
-                    r[i, 1],
-                    marker="x",
-                    markersize=15,
-                    color=color[i],
-                    label="Targets"
-                )
-                plt.plot(
-                    ZZ_at[tt, i, 0],
-                    ZZ_at[tt, i, 1],
-                    marker="o",
-                    markersize=15,
-                    color=color[i],
-                    label="Agents"
-                )
+    fig, ax = plt.subplots()
+    for kk in range(MAXITERS):
+        ax.cla()
+        for ii in range(NN):
+            if ii == 0:
+                ax.plot(ZZ_at[kk, ii, 0], ZZ_at[kk, ii, 1], 'o', color=color[ii], label="Agents", markersize=5)
+                ax.plot(r[ii, 0], r[ii, 1], 'x', color=color[ii], label="Targets", markersize=10)
             else:
-                plt.plot(
-                    r[i, 0],
-                    r[i, 1],
-                    marker="x",
-                    markersize=15,
-                    color=color[i],
-                )
-                plt.plot(
-                    ZZ_at[tt, i, 0],
-                    ZZ_at[tt, i, 1],
-                    marker="o",
-                    markersize=15,
-                    color=color[i],
-                )
-        plt.plot(
-            wall1[:,0],
-            wall1[:,1],
-            linewidth=1,
-            color="green",
-            linestyle="solid",
-        )
-        plt.plot(
-            wall2[:,0],
-            wall2[:,1],
-            linewidth=1,
-            color="green",
-            linestyle="solid",
-        )
-        plt.plot(
-            SS_at[tt, 0, 0],
-            SS_at[tt, 0, 1],
-            marker="p",
-            markersize=15,
-            color="k",
-            label="Baricenter"
-        )
-        plt.legend()
-        axes_lim = (-10, 10)
-        plt.xlim(axes_lim)
-        plt.ylim(axes_lim)
-        plt.axis("equal")
+                ax.plot(ZZ_at[kk, ii, 0], ZZ_at[kk, ii, 1], 'o', color=color[ii], markersize=5)
+                ax.plot(r[ii, 0], r[ii, 1], 'x', color=color[ii], markersize=10)
+        ax.set_xlim(-12, 12)
+        ax.set_ylim(-10, 10)
+        # plot the baricenter
+        ax.plot(SS_at[kk, 0, 0], SS_at[kk, 0, 1], 'p', color='k', label="Baricenter", markersize=5)
+        # plot the walls
+        ax.plot(wall1[:,0], wall1[:,1], 'k', label="Wall", color="green", linestyle="solid")
+        ax.plot(wall2[:,0], wall2[:,1], 'k', color="green", linestyle="solid")
+        ax.legend()
+        # add legend 
         plt.xlabel("first component")
         plt.ylabel("second component")
-        plt.title(f"Aggregative traking - Simulation time = {tt}")
-        plt.show(block=False)
-        plt.pause(0.01)
-        plt.clf()
-plt.figure("Animation")
-animation(ZZ_at, SS_at, NN, MAXITERS, r)
+        plt.title(f"Aggregative tracking - Simulation time = {kk}")
+        plt.legend()
+        plt.pause(0.1)
+    plt.show()
 
-plt.show()
+animation(ZZ_at, SS_at, NN, MAXITERS, r)

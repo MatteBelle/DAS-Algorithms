@@ -4,16 +4,19 @@ import networkx as nx
 from scipy.integrate import solve_ivp
 # Task 2.1
 np.random.seed(0)
+
 # Parameters
 NN = 10  # Number of points
 
-MAXITERS = 1000
+MAXITERS = 300
 dd = 2    # Dimension of the input space
 q = 4
-gamma = 0.5
-delta = 0.5
+gamma = 1
+delta = 0
 # Step 1: Generate a dataset
 r = np.random.randn(NN, dd)
+print(r)
+print(r[:, 0])
 def phi(z):
     return z
 
@@ -31,6 +34,8 @@ def grad_function_1(z, r, s):
 
 def grad_function_2(z, s):
     return 2 * delta * (z - s)
+
+NN = 10
 
 #G = nx.path_graph(NN)
 G = nx.star_graph(NN-1)
@@ -56,6 +61,7 @@ if 0:
     print(np.sum(AA, axis=1))
 
 #ZZ_at = np.random.randn(MAXITERS, NN, dd)
+
 ZZ_at = np.zeros((MAXITERS, NN, dd))
 SS_at = np.zeros((MAXITERS, NN, dd))
 VV_at = np.zeros((MAXITERS, NN, dd))
@@ -118,61 +124,56 @@ plt.show()
 
 def animation(ZZ_at, SS_at, NN, MAXITERS, r):
     color = ["r", "g", "b", "c", "m", "y", "#0072BD", "#D95319", "#7E2F8E", "#77AC30"]
-    for tt in range(MAXITERS):
-        for i in range(NN):
-            axes_lim = (np.min(r) - 1, np.max(r) + 1)
-            plt.xlim(axes_lim)
-            plt.ylim(axes_lim)
-            plt.axis("equal")
-            if i == 0:
-                plt.plot(
-                    r[i, 0],
-                    r[i, 1],
-                    marker="x",
-                    markersize=15,
-                    color=color[i],
-                    label="Targets"
-                )
-                plt.plot(
-                    ZZ_at[tt, i, 0],
-                    ZZ_at[tt, i, 1],
-                    marker="o",
-                    markersize=15,
-                    color=color[i],
-                    label="Agents"
-                )
+    fig, ax = plt.subplots()
+    for kk in range(MAXITERS):
+        ax.cla()
+        for ii in range(NN):
+            if ii == 0:
+                ax.plot(ZZ_at[kk, ii, 0], ZZ_at[kk, ii, 1], 'o', color=color[ii], label="Agents", markersize=15)
+                ax.plot(r[ii, 0], r[ii, 1], 'x', color=color[ii], label="Targets", markersize=15)
             else:
-                plt.plot(
-                    r[i, 0],
-                    r[i, 1],
-                    marker="x",
-                    markersize=15,
-                    color=color[i],
-                )
-                plt.plot(
-                    ZZ_at[tt, i, 0],
-                    ZZ_at[tt, i, 1],
-                    marker="o",
-                    markersize=15,
-                    color=color[i],
-                )
-        plt.plot(
-            SS_at[tt, 0, 0],
-            SS_at[tt, 0, 1],
-            marker="p",
-            markersize=15,
-            color="k",
-            label="Baricenter"
-        )
-        plt.legend()
-        
+                ax.plot(ZZ_at[kk, ii, 0], ZZ_at[kk, ii, 1], 'o', color=color[ii], markersize=15)
+                ax.plot(r[ii, 0], r[ii, 1], 'x', color=color[ii], markersize=15)
+        ax.set_xlim(-1.5, 1.5)
+        ax.set_ylim(-1.5, 1.5)
+        # also plot the baricenter
+        ax.plot(SS_at[kk, 0, 0], SS_at[kk, 0, 1], 'p', color='k', label="Baricenter", markersize=15)
+        ax.legend()
+        # add legend 
         plt.xlabel("first component")
         plt.ylabel("second component")
-        plt.title(f"Aggregative traking - Simulation time = {tt}")
-        plt.show(block=False)
-        plt.pause(0.001)
-        plt.clf()
-plt.figure("Animation")
+        plt.title(f"Aggregative tracking - Simulation time = {kk}")
+        plt.legend()
+        plt.pause(0.1)
+    plt.show()
+
 animation(ZZ_at, SS_at, NN, MAXITERS, r)
 
-plt.show()
+
+def animation(ZZ_at, SS_at, NN, MAXITERS, r):
+    color = ["r", "g", "b", "c", "m", "y", "#0072BD", "#D95319", "#7E2F8E", "#77AC30"]
+    fig, ax = plt.subplots()
+    for kk in range(MAXITERS):
+        ax.cla()
+        for ii in range(NN):
+            if ii == 0:
+                ax.plot(ZZ_at[kk, ii, 0], ZZ_at[kk, ii, 1], 'o', color=color[ii], label="Agents", markersize=15)
+                ax.plot(r[ii, 0], r[ii, 1], 'x', color=color[ii], label="Targets", markersize=15)
+            else:
+                ax.plot(ZZ_at[kk, ii, 0], ZZ_at[kk, ii, 1], 'o', color=color[ii], markersize=15)
+                ax.plot(r[ii, 0], r[ii, 1], 'x', color=color[ii], markersize=15)
+        ax.set_xlim(-1.5, 1.5)
+        ax.set_ylim(-1.5, 1.5)
+        # plot the baricenter
+        ax.plot(SS_at[kk, 0, 0], SS_at[kk, 0, 1], 'p', color='k', label="Baricenter", markersize=15)
+        # plot the walls
+        ax.plot(wall1[:,0], wall1[:,1], 'k', label="Wall1", color="green", linestyle="solid")
+        ax.plot(wall2[:,0], wall2[:,1], 'k', label="Wall2")
+        ax.legend()
+        # add legend 
+        plt.xlabel("first component")
+        plt.ylabel("second component")
+        plt.title(f"Aggregative tracking - Simulation time = {kk}")
+        plt.legend()
+        plt.pause(0.1)
+    plt.show()
