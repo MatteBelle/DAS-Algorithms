@@ -148,32 +148,3 @@ def animation(ZZ_at, SS_at, NN, MAXITERS, r):
     plt.show()
 
 animation(ZZ_at, SS_at, NN, MAXITERS, r)
-
-
-def animation(ZZ_at, SS_at, NN, MAXITERS, r):
-    color = ["r", "g", "b", "c", "m", "y", "#0072BD", "#D95319", "#7E2F8E", "#77AC30"]
-    fig, ax = plt.subplots()
-    for kk in range(MAXITERS):
-        ax.cla()
-        for ii in range(NN):
-            if ii == 0:
-                ax.plot(ZZ_at[kk, ii, 0], ZZ_at[kk, ii, 1], 'o', color=color[ii], label="Agents", markersize=15)
-                ax.plot(r[ii, 0], r[ii, 1], 'x', color=color[ii], label="Targets", markersize=15)
-            else:
-                ax.plot(ZZ_at[kk, ii, 0], ZZ_at[kk, ii, 1], 'o', color=color[ii], markersize=15)
-                ax.plot(r[ii, 0], r[ii, 1], 'x', color=color[ii], markersize=15)
-        ax.set_xlim(-1.5, 1.5)
-        ax.set_ylim(-1.5, 1.5)
-        # plot the baricenter
-        ax.plot(SS_at[kk, 0, 0], SS_at[kk, 0, 1], 'p', color='k', label="Baricenter", markersize=15)
-        # plot the walls
-        ax.plot(wall1[:,0], wall1[:,1], 'k', label="Wall1", color="green", linestyle="solid")
-        ax.plot(wall2[:,0], wall2[:,1], 'k', label="Wall2")
-        ax.legend()
-        # add legend 
-        plt.xlabel("first component")
-        plt.ylabel("second component")
-        plt.title(f"Aggregative tracking - Simulation time = {kk}")
-        plt.legend()
-        plt.pause(0.1)
-    plt.show()
