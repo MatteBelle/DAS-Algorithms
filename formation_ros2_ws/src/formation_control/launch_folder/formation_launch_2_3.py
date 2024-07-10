@@ -103,7 +103,7 @@ def generate_launch_description():
             Node(
                 package="formation_control",
                 namespace=f"agent_{ii}",
-                executable="generic_agent",
+                executable="2_3_agent",
                 parameters=[
                     {
                         "id": ii,
@@ -124,6 +124,8 @@ def generate_launch_description():
                         "wall1_point2": wall1[1].tolist(),
                         "wall2_point1": wall2[0].tolist(),
                         "wall2_point2": wall2[1].tolist(),
+                        "q": q,
+                        "NN": NN,
                     }
                 ],
                 output="screen",

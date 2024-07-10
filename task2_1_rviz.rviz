@@ -6,26 +6,6 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /PointStamped1
-        - /PointStamped2
-        - /PointStamped3
-        - /PointStamped4
-        - /PointStamped5
-        - /PointStamped6
-        - /PointStamped7
-        - /PointStamped8
-        - /PointStamped9
-        - /PointStamped10
-        - /PointStamped11
-        - /PointStamped12
-        - /PointStamped13
-        - /PointStamped14
-        - /PointStamped15
-        - /PointStamped16
-        - /PointStamped17
-        - /PointStamped18
-        - /PointStamped19
-        - /PointStamped20
       Splitter Ratio: 0.5
     Tree Height: 617
   - Class: rviz_common/Selection
@@ -62,13 +42,11 @@ Visualization Manager:
       Plane Cell Count: 10
       Reference Frame: <Fixed Frame>
       Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/PointStamped
-      Color: 204; 41; 204
+    - Class: rviz_default_plugins/Marker
       Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 0.20000000298023224
+      Name: Marker
+      Namespaces:
+        "": true
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -76,27 +54,11 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /pose_0
       Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/PointStamped
-      Color: 115; 210; 22
+    - Class: rviz_default_plugins/Marker
       Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 0.20000000298023224
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /target_0
-      Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/PointStamped
-      Color: 204; 41; 204
-      Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 0.20000000298023224
+      Name: Marker
+      Namespaces:
+        "": true
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -104,27 +66,11 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /pose_1
       Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/PointStamped
-      Color: 204; 41; 204
+    - Class: rviz_default_plugins/Marker
       Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 0.20000000298023224
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /pose_2
-      Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/PointStamped
-      Color: 204; 41; 204
-      Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 0.20000000298023224
+      Name: Marker
+      Namespaces:
+        "": true
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -132,13 +78,11 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /pose_3
       Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/PointStamped
-      Color: 204; 41; 204
+    - Class: rviz_default_plugins/Marker
       Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 0.20000000298023224
+      Name: Marker
+      Namespaces:
+        "": true
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -146,13 +90,11 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /pose_4
       Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/PointStamped
-      Color: 204; 41; 204
+    - Class: rviz_default_plugins/Marker
       Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 0.20000000298023224
+      Name: Marker
+      Namespaces:
+        "": true
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -160,13 +102,11 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /pose_5
       Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/PointStamped
-      Color: 204; 41; 204
+    - Class: rviz_default_plugins/Marker
       Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 0.20000000298023224
+      Name: Marker
+      Namespaces:
+        "": true
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -174,13 +114,11 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /pose_6
       Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/PointStamped
-      Color: 204; 41; 204
+    - Class: rviz_default_plugins/Marker
       Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 0.20000000298023224
+      Name: Marker
+      Namespaces:
+        "": true
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -188,13 +126,11 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /pose_7
       Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/PointStamped
-      Color: 204; 41; 204
+    - Class: rviz_default_plugins/Marker
       Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 0.20000000298023224
+      Name: Marker
+      Namespaces:
+        "": true
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -202,13 +138,11 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /pose_8
       Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/PointStamped
-      Color: 204; 41; 204
+    - Class: rviz_default_plugins/Marker
       Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 0.20000000298023224
+      Name: Marker
+      Namespaces:
+        "": true
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -216,13 +150,23 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /pose_9
       Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/PointStamped
-      Color: 115; 210; 22
+    - Class: rviz_default_plugins/Marker
       Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 0.20000000298023224
+      Name: Marker
+      Namespaces:
+        "": true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /target_0
+      Value: true
+    - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: Marker
+      Namespaces:
+        "": true
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -230,13 +174,11 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /target_1
       Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/PointStamped
-      Color: 115; 210; 22
+    - Class: rviz_default_plugins/Marker
       Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 0.20000000298023224
+      Name: Marker
+      Namespaces:
+        "": true
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -244,13 +186,11 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /target_2
       Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/PointStamped
-      Color: 115; 210; 22
+    - Class: rviz_default_plugins/Marker
       Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 0.20000000298023224
+      Name: Marker
+      Namespaces:
+        "": true
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -258,13 +198,11 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /target_3
       Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/PointStamped
-      Color: 115; 210; 22
+    - Class: rviz_default_plugins/Marker
       Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 0.20000000298023224
+      Name: Marker
+      Namespaces:
+        "": true
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -272,13 +210,11 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /target_4
       Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/PointStamped
-      Color: 115; 210; 22
+    - Class: rviz_default_plugins/Marker
       Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 0.20000000298023224
+      Name: Marker
+      Namespaces:
+        "": true
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -286,13 +222,11 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /target_5
       Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/PointStamped
-      Color: 115; 210; 22
+    - Class: rviz_default_plugins/Marker
       Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 0.20000000298023224
+      Name: Marker
+      Namespaces:
+        "": true
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -300,13 +234,11 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /target_6
       Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/PointStamped
-      Color: 115; 210; 22
+    - Class: rviz_default_plugins/Marker
       Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 0.20000000298023224
+      Name: Marker
+      Namespaces:
+        "": true
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -314,13 +246,11 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /target_7
       Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/PointStamped
-      Color: 115; 210; 22
+    - Class: rviz_default_plugins/Marker
       Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 0.20000000298023224
+      Name: Marker
+      Namespaces:
+        "": true
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -328,43 +258,17 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /target_8
       Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/PointStamped
-      Color: 115; 210; 22
+    - Class: rviz_default_plugins/Marker
       Enabled: true
-      History Length: 1
-      Name: PointStamped
-      Radius: 0.20000000298023224
+      Name: Marker
+      Namespaces:
+        "": true
       Topic:
         Depth: 5
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /target_9
-      Value: true
-    - Class: rviz_default_plugins/Marker
-      Enabled: true
-      Name: Marker
-      Namespaces:
-        "": true
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /wall1_0
-      Value: true
-    - Class: rviz_default_plugins/Marker
-      Enabled: true
-      Name: Marker
-      Namespaces:
-        "": true
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /wall2_0
       Value: true
   Enabled: true
   Global Options:
@@ -408,21 +312,26 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: -1.3999991416931152
-      Class: rviz_default_plugins/TopDownOrtho
+      Class: rviz_default_plugins/XYOrbit
+      Distance: 7.080029010772705
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: 23.28914451599121
+      Pitch: 1.0297969579696655
       Target Frame: <Fixed Frame>
-      Value: TopDownOrtho (rviz_default_plugins)
-      X: 0
-      Y: 0
+      Value: XYOrbit (rviz_default_plugins)
+      Yaw: 4.502377510070801
     Saved: ~
 Window Geometry:
   Displays:

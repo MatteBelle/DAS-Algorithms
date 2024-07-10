@@ -21,6 +21,7 @@ setup(
     license="TODO: License declaration",
     tests_require=["pytest"],
     entry_points={
-        "console_scripts": [f"generic_agent = {package_name}.the_agent:main"],
+        "console_scripts": [f"2_1_agent = {package_name}.the_agent_2_1:main",
+                            f"2_3_agent = {package_name}.the_agent_2_3:main"],
     },
 )

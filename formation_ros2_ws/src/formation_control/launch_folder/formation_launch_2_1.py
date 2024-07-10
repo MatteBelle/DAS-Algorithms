@@ -88,7 +88,7 @@ def generate_launch_description():
             Node(
                 package="formation_control",
                 namespace=f"agent_{ii}",
-                executable="generic_agent",
+                executable="2_1_agent",
                 parameters=[
                     {
                         "id": ii,
@@ -104,6 +104,8 @@ def generate_launch_description():
                         "AA": AA_ii,
                         "AA_neighbors": AA_neighbors,
                         "maxT": MAXITERS,
+                        "q": q,
+                        "NN": NN,
                     }
                 ],
                 output="screen",
