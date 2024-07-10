@@ -5,26 +5,16 @@ from scipy.integrate import solve_ivp
 # Task 2.1
 np.random.seed(0)
 # Parameters
-NN = 10  # Number of points
+NN = 4  # Number of points
+
 MAXITERS = 1000
-dd = 2   # Dimension of the input space
+dd = 2    # Dimension of the input space
 q = 4
 gamma = 0.5
-delta = 0.1
-epsilon = 2
+delta = 0.5
 # Step 1: Generate a dataset
-r = np.random.randn(NN, dd)
-for n in range(NN):
-    r[n] = r[n] + (8,0)
-
-wall1 = np.zeros((2,2))
-wall2 = np.zeros((2,2))
-
-wall1[0] = (-4,1)
-wall1[1] = (4,1)
-wall2[0] = (-4,-1)
-wall2[1] = (4,-1)
-
+r = np.zeros((NN, dd))
+r = np.array([[1,1], [1,-1], [-1,-1], [-1,1]])
 def phi(z):
     return z
 
@@ -33,20 +23,19 @@ def grad_phi(z):
 # Step 2: Define the nonlinear transformation function phi
 def sigma(z):
     return np.mean(phi(z), axis=0)
-def cost_function(z, r, s, w1, w2):
-    return gamma * np.linalg.norm(z - r)**2 + delta * np.linalg.norm(z - s)**2 + epsilon * (np.linalg.norm(z[1] - (w1[0][1] + w2[0][1]) / 2)**2)
-def grad_function_1(z, r, s, w1, w2):
-    c = 0
-    if (z[0] < w1[1][0]):
-        c = 2 * epsilon * (z[1] - (w1[0][1] + w2[0][1]) / 2)
-    return 2 * gamma * (z[0] - r[0]) + 2 * delta * (z[0] - s[0]), 2 * gamma * (z[1] - r[1]) + 2 * delta * (z[1] - s[1]) + c
+
+def cost_function(z, r, s):
+    return gamma * np.linalg.norm(z - r)**2 + delta * np.linalg.norm(z - s)**2
+
+def grad_function_1(z, r, s):
+    return 2 * gamma * (z[0] - r[0]) + 2 * delta * (z[0] - s[0]), 2 * gamma * (z[1] - r[1]) + 2 * delta * (z[1] - s[1])
 
 def grad_function_2(z, s):
     return 2 * delta * (z - s)
 
 #G = nx.path_graph(NN)
-#G = nx.star_graph(NN-1)
-G = nx.cycle_graph(NN)
+G = nx.star_graph(NN-1)
+#G = nx.cycle_graph(NN)
 
 I_NN = np.eye(NN)
 
@@ -67,9 +56,8 @@ if 0:
     print(np.sum(AA, axis=0))
     print(np.sum(AA, axis=1))
 
-ZZ_at = np.random.randn(MAXITERS, NN, dd)
-for n in range(NN):
-    ZZ_at[0, n] = ZZ_at[0, n] - (15,0)
+#ZZ_at = np.random.randn(MAXITERS, NN, dd)
+ZZ_at = np.zeros((MAXITERS, NN, dd))
 SS_at = np.zeros((MAXITERS, NN, dd))
 VV_at = np.zeros((MAXITERS, NN, dd))
 for ii in range(NN):
@@ -78,16 +66,18 @@ for ii in range(NN):
 
 
 cost_at = np.zeros((MAXITERS))
-gradients_norm = np.zeros((MAXITERS))
+gradients_norm= np.zeros((MAXITERS))
+gradients_k = np.zeros((q))
 alpha = 1e-2
-for kk in range(MAXITERS - 1):
-    gradients_k = np.zeros((q))
 
+for kk in range(MAXITERS - 1):
+
+    gradients_k = np.zeros((q))
     # gradient tracking
     for ii in range(NN):
         N_ii = np.nonzero(Adj[ii])[0]
 
-        ZZ_at[kk + 1, ii] = ZZ_at[kk, ii] - alpha * (grad_function_1(ZZ_at[kk, ii], r[ii], SS_at[kk, ii], wall1, wall2) + grad_phi(ZZ_at[kk, ii]) * VV_at[kk, ii])
+        ZZ_at[kk + 1, ii] = ZZ_at[kk, ii] - alpha * (grad_function_1(ZZ_at[kk, ii], r[ii], SS_at[kk, ii]) + grad_phi(ZZ_at[kk, ii]) * VV_at[kk, ii])
 
         SS_at[kk + 1, ii] += AA[ii, ii] * SS_at[kk, ii]
         VV_at[kk + 1, ii] += AA[ii, ii] * VV_at[kk, ii]
@@ -101,18 +91,19 @@ for kk in range(MAXITERS - 1):
         old_grad_3 = grad_function_2(ZZ_at[kk, ii], SS_at[kk, ii])
         VV_at[kk + 1, ii] += new_grad_3 - old_grad_3
 
-        old_grad_1, old_grad_2 = grad_function_1(ZZ_at[kk, ii], r[ii], SS_at[kk, ii], wall1, wall2)
-        new_grad_1, new_grad_2 = grad_function_1(ZZ_at[kk + 1, ii], r[ii], SS_at[kk, ii], wall1, wall2)
+
+        old_grad_1, old_grad_2 = grad_function_1(ZZ_at[kk, ii], r[ii], SS_at[kk, ii])
+        new_grad_1, new_grad_2 = grad_function_1(ZZ_at[kk + 1, ii], r[ii], SS_at[kk, ii])
         gradients_k[0] += new_grad_1 - old_grad_1
         gradients_k[1] += new_grad_2 - old_grad_2
+
         gradients_k[2] += new_grad_3[0] - old_grad_3[0]
         gradients_k[3] += new_grad_3[1] - old_grad_3[1]
 
-        ell_ii_gt = cost_function(ZZ_at[kk, ii], r[ii], SS_at[kk, ii], wall1, wall2)
+        ell_ii_gt = cost_function(ZZ_at[kk, ii], r[ii], SS_at[kk, ii])
         cost_at[kk] += ell_ii_gt
 
     gradients_norm[kk] = np.linalg.norm(gradients_k)
-
 
 fig, ax = plt.subplots()
 ax.semilogy(np.arange(MAXITERS - 1), cost_at[:-1])
@@ -125,10 +116,15 @@ ax.semilogy(np.arange(MAXITERS - 1), gradients_norm[0:-1])
 ax.grid()
 
 plt.show()
+
 def animation(ZZ_at, SS_at, NN, MAXITERS, r):
     color = ["r", "g", "b", "c", "m", "y", "#0072BD", "#D95319", "#7E2F8E", "#77AC30"]
     for tt in range(MAXITERS):
         for i in range(NN):
+            axes_lim = (np.min(r) - 1, np.max(r) + 1)
+            plt.xlim(axes_lim)
+            plt.ylim(axes_lim)
+            plt.axis("equal")
             if i == 0:
                 plt.plot(
                     r[i, 0],
@@ -162,20 +158,6 @@ def animation(ZZ_at, SS_at, NN, MAXITERS, r):
                     color=color[i],
                 )
         plt.plot(
-            wall1[:,0],
-            wall1[:,1],
-            linewidth=1,
-            color="green",
-            linestyle="solid",
-        )
-        plt.plot(
-            wall2[:,0],
-            wall2[:,1],
-            linewidth=1,
-            color="green",
-            linestyle="solid",
-        )
-        plt.plot(
             SS_at[tt, 0, 0],
             SS_at[tt, 0, 1],
             marker="p",
@@ -184,15 +166,12 @@ def animation(ZZ_at, SS_at, NN, MAXITERS, r):
             label="Baricenter"
         )
         plt.legend()
-        axes_lim = (-10, 10)
-        plt.xlim(axes_lim)
-        plt.ylim(axes_lim)
-        plt.axis("equal")
+        
         plt.xlabel("first component")
         plt.ylabel("second component")
         plt.title(f"Aggregative traking - Simulation time = {tt}")
         plt.show(block=False)
-        plt.pause(0.01)
+        plt.pause(0.001)
         plt.clf()
 plt.figure("Animation")
 animation(ZZ_at, SS_at, NN, MAXITERS, r)
