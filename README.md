@@ -76,12 +76,12 @@ ros2 run rviz2 rviz2
 - Enjoy the simulation!
 
 ## Project Description:
-This report presents the solutions to the course project assignments for Distributed Autonomous Systems 2023-24. The project comprises two main tasks: Distributed Classification via Logistic Regression and Aggregative Optimization for Multi-Robot Systems.\\
-\\
-In the first task, we implement a distributed classification algorithm using Logistic Regression across multiple agents. The agents collaboratively determine a nonlinear classifier for a dataset divided into subsets. The Gradient Tracking algorithm is employed to achieve consensus optimization, and the performance is evaluated through simulations, assessing the convergence to a stationary point, cost function evolution, and classification accuracy.\\
-\\
-The second task focuses on the control of multi-robot systems using the Aggregative Tracking algorithm. Each robot aims to maintain a tight formation while moving towards individual targets in a two-dimensional environment. We develop a Python script to simulate this behavior, tuning cost functions for various scenarios, and provide an animated visualization of the robots' movements. Additionally, a ROS 2 package is created to implement the algorithm in a real-world robotic system, including experiments to navigate corridors without collisions.\\
-\\
+This report presents the solutions to the course project assignments for Distributed Autonomous Systems 2023-24. The project comprises two main tasks: Distributed Classification via Logistic Regression and Aggregative Optimization for Multi-Robot Systems.
+
+In the first task, we implement a distributed classification algorithm using Logistic Regression across multiple agents. The agents collaboratively determine a nonlinear classifier for a dataset divided into subsets. The Gradient Tracking algorithm is employed to achieve consensus optimization, and the performance is evaluated through simulations, assessing the convergence to a stationary point, cost function evolution, and classification accuracy.
+
+The second task focuses on the control of multi-robot systems using the Aggregative Tracking algorithm. Each robot aims to maintain a tight formation while moving towards individual targets in a two-dimensional environment. We develop a Python script to simulate this behavior, tuning cost functions for various scenarios, and provide an animated visualization of the robots' movements. Additionally, a ROS 2 package is created to implement the algorithm in a real-world robotic system, including experiments to navigate corridors without collisions.
+
 Both tasks demonstrate the effectiveness of distributed algorithms in classification and control, validated through extensive simulations and real-world implementations in ROS 2. The results highlight the robustness of the proposed solutions in achieving desired outcomes in distributed autonomous systems.
 
 ## Authors:
