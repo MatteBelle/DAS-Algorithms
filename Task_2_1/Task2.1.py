@@ -92,7 +92,7 @@ Adj = nx.adjacency_matrix(G)
 Adj = Adj.toarray()
 AA = np.zeros(shape=(NN, NN))
 
-# Initialization of the AA matrix
+# Initialization of the AA matrix: Metropolis-Hastings weights
 for ii in range(NN):
     N_ii = np.nonzero(Adj[ii])[0]
     deg_ii = len(N_ii)
@@ -100,6 +100,7 @@ for ii in range(NN):
         deg_jj = len(np.nonzero(Adj[jj])[0])
         AA[ii, jj] = 1 / (1 + max([deg_ii, deg_jj]))
 
+AA += I_NN - np.diag(np.sum(AA, axis=0))
 # Initialization of the variables
 #ZZ_at = np.random.randn(MAXITERS, NN, dd)
 ZZ_at = np.zeros((MAXITERS, NN, dd)) # Agents
@@ -180,8 +181,8 @@ def animation(ZZ_at, SS_at, NN, MAXITERS, r):
             else:
                 ax.plot(ZZ_at[kk, ii, 0], ZZ_at[kk, ii, 1], 'o', color=color[ii], markersize=15)
                 ax.plot(r[ii, 0], r[ii, 1], 'x', color=color[ii], markersize=15)
-        ax.set_xlim(-1.5, 1.5)
-        ax.set_ylim(-1.5, 1.5)
+        ax.set_xlim(-3, 3)
+        ax.set_ylim(-3, 3)
         # plot the baricenter
         ax.plot(SS_at[kk, 0, 0], SS_at[kk, 0, 1], 'p', color='k', label="Baricenter", markersize=15)
         ax.legend()

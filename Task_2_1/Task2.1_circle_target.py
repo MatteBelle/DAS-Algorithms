@@ -125,8 +125,7 @@ for ii in range(NN):
 
 AA += I_NN - np.diag(np.sum(AA, axis=0))
 
-
-# Initialization of the variables
+# Initialization of the variables: Metropolis-Hastings weights
 #ZZ_at = np.random.randn(MAXITERS, NN, dd)
 ZZ_at = np.zeros((MAXITERS, NN, dd)) # Agents
 SS_at = np.zeros((MAXITERS, NN, dd)) # Baricenter

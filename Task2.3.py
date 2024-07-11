@@ -120,7 +120,7 @@ for ii in range(NN):
 
 AA += I_NN - np.diag(np.sum(AA, axis=0))
 
-# Initialization of the variables
+# Initialization of the variables: Metropolis-Hastings weights
 ZZ_at = np.random.randn(MAXITERS, NN, dd) # Agents
 for n in range(NN):
     ZZ_at[0, n] = ZZ_at[0, n] - (10,0) # Each agent is shifted by (10,0) to the left
@@ -160,7 +160,6 @@ for kk in range(MAXITERS - 1):
         old_grad_1, old_grad_2 = grad_function_1(ZZ_at[kk, ii], r[ii], SS_at[kk, ii], wall1, wall2)
         new_grad_1, new_grad_2 = grad_function_1(ZZ_at[kk + 1, ii], r[ii], SS_at[kk, ii], wall1, wall2)
         gradients_k[0] = old_grad_1
-        gradients_k[1] = old_grad_2
         gradients_k[2] = old_grad_3[0]
         gradients_k[3] = old_grad_3[1]
 
