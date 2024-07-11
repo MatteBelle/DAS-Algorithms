@@ -113,7 +113,8 @@ for ii in range(NN):
 
 # Gradient descent
 cost_at = np.zeros((MAXITERS))
-gradients_norm= np.zeros((MAXITERS))
+gradients_norm_z = np.zeros((MAXITERS))
+gradients_norm_s = np.zeros((MAXITERS))
 gradients_k = np.zeros((q))
 alpha = 1e-2 # Step size
 
@@ -148,7 +149,8 @@ for kk in range(MAXITERS - 1):
 
         ell_ii_gt = cost_function(ZZ_at[kk, ii], r[ii], SS_at[kk, ii])
         cost_at[kk] += ell_ii_gt
-        gradients_norm[kk] += np.linalg.norm(gradients_k)
+        gradients_norm_z[kk] += np.linalg.norm(gradients_k[:2])
+        gradients_norm_s[kk] += np.linalg.norm(gradients_k[2:])
 
 # Plots: cost function and gradient norm
 fig, ax = plt.subplots()
@@ -160,10 +162,10 @@ ax.grid()
 plt.show()
 
 fig, ax = plt.subplots()
-ax.semilogy(np.arange(MAXITERS - 2), gradients_norm[1:-1])
+ax.semilogy(np.arange(MAXITERS - 2), gradients_norm_z[1:-1])
 plt.xlabel("Iterations")
-plt.ylabel("Gradient norm")
-plt.title("Evolution of the gradient norm")
+plt.ylabel("Gradient norm of ZZ")
+plt.title("Evolution of the gradient norm of ZZ")
 ax.grid()
 plt.show()
 
