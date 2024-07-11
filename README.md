@@ -6,7 +6,7 @@ Implementation of distributed algorithms (Distributed and Autonomous System) for
 DAS-Algorithms
 │   README.md
 │
-└───Task2.ipynb
+└───Task1.ipynb
 │
 └───Task2.3.py
 │
